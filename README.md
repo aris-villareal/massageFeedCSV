@@ -1,8 +1,74 @@
 # CSV Feed Massage Tool
 
 A TypeScript project that provides:
-1. **CSV transformation tool** - transforms CSV feed data with specific operations
-2. **Redash query executor** - executes Redash queries and exports results to CSV
+1. **🚀 Production Feed Automation** - complete workflow from Redash query to processed CSV
+2. **CSV transformation tool** - transforms CSV feed data with specific operations
+3. **Redash query executor** - executes Redash queries and exports results to CSV
+
+## 🗺️ Quick Navigation
+
+- **🚀 [Production Workflow](#-production-feed-automation-prepprodFeed)** - Start here for automated production feeds
+- **🔧 [CSV Transform Tool](#csv-transformation-tool)** - Individual CSV processing
+- **📊 [Redash Query Tool](#redash-query-executor)** - Individual query execution
+- **📚 [Detailed Guide](USAGE_prepProdFeed.md)** - Complete documentation
+
+## 🚀 Production Feed Automation (prepProdFeed)
+
+**For production use, start here!** The `prepProdFeed.sh` script provides a complete automated workflow:
+
+### Quick Start
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Configure Redash (one-time setup)
+cp redash-config.example .env
+# Edit .env with your Redash URL and API key
+
+# 3. Make scripts executable
+chmod +x prepProdFeed.sh redash.sh run.sh
+
+# 4. Run the complete production workflow
+./prepProdFeed.sh
+```
+
+### What It Does
+1. **📊 Fetches Data**: Executes Redash query 33047 and exports raw CSV
+2. **🔄 Transforms Data**: Applies all transformations (camelCase columns, entityType fixes, score scaling)
+3. **📄 Outputs Final File**: Creates timestamped production-ready CSV: `prod_feed_YYYYMMDD_HHMMSS.csv`
+4. **🧹 Cleanup**: Removes temporary files automatically
+
+### Example Output
+```
+🚀 Production Feed Preparation Script
+Query ID: 33047
+Timestamp: 20240731_143022
+
+📊 Step 1: Executing Redash query 33047...
+✅ Query executed successfully in 123ms
+📄 Results exported to: temp/query_33047_raw_20240731_143022.csv
+
+🔄 Step 2: Processing CSV through massage script...
+✅ Successfully processed 1,234 rows
+📄 Output file: prod_feed_20240731_143022.csv
+
+🎉 Production feed preparation completed successfully!
+📄 Final file: prod_feed_20240731_143022.csv
+📊 File contains: 1,234 data rows
+```
+
+> 💡 **Tip**: This is the recommended way to generate production feeds. It combines query execution + data transformation in one command with proper error handling and cleanup.
+
+### Detailed Documentation
+📚 **[Complete prepProdFeed Usage Guide](USAGE_prepProdFeed.md)** - Comprehensive documentation with troubleshooting, examples, and advanced usage.
+
+### Common Issues & Quick Fixes
+- **"ts-node not found"** → Run `npm install`
+- **"Missing Redash configuration"** → Create `.env` file from `redash-config.example`
+- **"Permission denied"** → Run `chmod +x prepProdFeed.sh redash.sh run.sh`
+- **"Query execution failed"** → Verify query ID 33047 exists and check API key permissions
+
+---
 
 ## CSV Transformation Tool
 
@@ -160,7 +226,10 @@ npm run redash list | grep -i revenue
 
 ## Requirements
 
-- Node.js 16+
-- TypeScript
-- ts-node (for direct execution)
-- Redash instance with API access (for Redash functionality)
+- **Node.js 16+**
+- **TypeScript**
+- **ts-node** (for direct execution)
+- **Redash instance with API access** (for Redash functionality and prepProdFeed)
+- **Bash shell** (for prepProdFeed automation script)
+
+> 💡 **Quick Start**: Most users should start with [prepProdFeed](#-production-feed-automation-prepprodFeed) for the complete automated workflow.
