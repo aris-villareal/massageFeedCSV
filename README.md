@@ -1,5 +1,11 @@
 # CSV Feed Massage Tool
 
+A TypeScript project that provides:
+1. **CSV transformation tool** - transforms CSV feed data with specific operations
+2. **Redash query executor** - executes Redash queries and exports results to CSV
+
+## CSV Transformation Tool
+
 A TypeScript script that transforms CSV feed data with the following operations:
 
 1. **Column name transformation**: Converts column names to camelCase
@@ -73,8 +79,88 @@ discussionId,discussionType,entityId,entityType,discussionCreatedAt,score
 - Provides a summary of transformations performed
 - Handles CSV parsing correctly including quoted values and commas within fields
 
+## Redash Query Executor
+
+A TypeScript script that can execute Redash queries via API and export results to CSV.
+
+### Setup
+
+1. Copy the configuration template:
+   ```bash
+   cp redash-config.example .env
+   ```
+
+2. Edit `.env` file with your Redash instance details:
+   ```
+   REDASH_BASE_URL=https://your-redash-instance.com
+   ***REMOVED***your-api-key-here
+   ```
+
+3. Find your API key in your Redash user profile settings.
+
+### Usage
+
+Using npm scripts (recommended):
+```bash
+# Execute a query and save to CSV
+npm run redash execute 123
+
+# Execute a query with custom output filename
+npm run redash execute 123 my-results.csv
+
+# Get cached results (faster, if available)
+npm run redash cached 123
+
+# List recent queries to find query IDs
+npm run redash list
+
+# Get information about a specific query
+npm run redash info 123
+```
+
+Alternative using the shell script:
+```bash
+# Execute a query and save to CSV
+./redash.sh execute 123
+
+# Execute a query with custom output filename
+./redash.sh execute 123 my-results.csv
+
+# Get cached results
+./redash.sh cached 123
+
+# List recent queries
+./redash.sh list
+
+# Get information about a specific query
+./redash.sh info 123
+```
+
+### Features
+
+- **Query execution**: Execute any Redash query by ID
+- **Cached results**: Retrieve cached results without re-running the query
+- **CSV export**: Automatically export results to CSV format
+- **Query discovery**: List and inspect available queries
+- **Progress monitoring**: Real-time status updates during query execution
+- **Error handling**: Comprehensive error reporting and timeout handling
+
+### Examples
+
+```bash
+# Execute marketing dashboard query
+npm run redash execute 456 marketing-data.csv
+
+# Get last week's cached user metrics
+npm run redash cached 789 user-metrics.csv
+
+# Find queries containing "revenue" in the name
+npm run redash list | grep -i revenue
+```
+
 ## Requirements
 
 - Node.js 16+
 - TypeScript
 - ts-node (for direct execution)
+- Redash instance with API access (for Redash functionality)
