@@ -1,0 +1,11 @@
+# Redash Configuration Example
+# Copy this file to .env and fill in your actual values
+
+# Your Redash instance URL (without trailing slash)
+REDASH_BASE_URL=https://your-redash-instance.com
+
+# Your Redash API key (found in your user profile settings)
+REDASH_API_KEY=your-api-key-here
+
+# Optional: Default timeout for queries (in milliseconds)
+# QUERY_TIMEOUT=30000

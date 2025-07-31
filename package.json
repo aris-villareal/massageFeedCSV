@@ -6,7 +6,12 @@
   "scripts": {
     "build": "tsc massage-csv.ts",
     "start": "ts-node massage-csv.ts",
-    "process": "ts-node massage-csv.ts New_Query_2025_07_31\\(1\\).csv"
+    "process": "ts-node massage-csv.ts New_Query_2025_07_31\\(1\\).csv",
+    "redash": "ts-node redash-query.ts"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
