@@ -1,0 +1,19 @@
+{
+  "name": "massage-feed-csv",
+  "version": "1.0.0",
+  "description": "TypeScript script to transform CSV feed data",
+  "main": "massage-csv.ts",
+  "scripts": {
+    "build": "tsc massage-csv.ts",
+    "start": "ts-node massage-csv.ts",
+    "process": "ts-node massage-csv.ts New_Query_2025_07_31\\(1\\).csv"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
