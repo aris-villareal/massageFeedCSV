@@ -69,7 +69,7 @@ function transformRow(inputRow: InputRow): OutputRow {
     entityId: inputRow.entityid,
     entityType: inputRow.entitytype === 'update' ? 'workspace' : inputRow.entitytype,
     discussionCreatedAt: inputRow.discussioncreatedat,
-    score: (parseFloat(inputRow.score) * 100).toString()
+    score: (parseFloat(inputRow.score) * 10000).toString()
   };
 }
 
@@ -158,7 +158,7 @@ function processCsvFile(inputFilePath: string, outputFilePath?: string): void {
     console.log(`\n📊 Transformation Summary:`);
     console.log(`   • Column names converted to camelCase`);
     console.log(`   • ${entityTypeChanges} "update" values changed to "workspace"`);
-    console.log(`   • All score values multiplied by 100`);
+    console.log(`   • All score values multiplied by 10000`);
     
   } catch (error) {
     console.error('❌ Error processing CSV file:', error instanceof Error ? error.message : error);
@@ -177,7 +177,7 @@ Usage: ts-node massage-csv.ts <input-file> [output-file]
 This script transforms a CSV file by:
 1. Converting column names to camelCase
 2. Replacing "update" with "workspace" in entityType column
-3. Multiplying score values by 100
+3. Multiplying score values by 10000
 
 Examples:
   ts-node massage-csv.ts data.csv
