@@ -46,7 +46,7 @@ chmod +x run.sh
 2. **Data Processing**: Applies transformations:
    - Converts column names to camelCase
    - Changes `entitytype` "update" values to "workspace" 
-   - Multiplies `score` values by 100
+   - Multiplies `score` values by 10000
 3. **Output Generation**: Creates final CSV with timestamp: `prod_feed_YYYYMMDD_HHMMSS.csv`
 4. **Cleanup**: Removes temporary files
 
