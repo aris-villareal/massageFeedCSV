@@ -323,7 +323,7 @@ Commands:
 
 Environment Variables (create .env file):
   REDASH_BASE_URL=https://your-redash-instance.com
-  ***REMOVED***your-api-key
+  REDASH_API_KEY=your-api-key
 
 Examples:
   ts-node redash-query.ts execute 123
@@ -344,7 +344,7 @@ Examples:
   if (!baseUrl || !apiKey) {
     console.error(`❌ Missing configuration. Please create a .env file with:
 REDASH_BASE_URL=https://your-redash-instance.com
-***REMOVED***your-api-key`);
+REDASH_API_KEY=your-api-key`);
     process.exit(1);
   }
 

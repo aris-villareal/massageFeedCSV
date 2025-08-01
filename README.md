@@ -159,7 +159,7 @@ A TypeScript script that can execute Redash queries via API and export results t
 2. Edit `.env` file with your Redash instance details:
    ```
    REDASH_BASE_URL=https://your-redash-instance.com
-   ***REMOVED***your-api-key-here
+   REDASH_API_KEY=your-api-key
    ```
 
 3. Find your API key in your Redash user profile settings.

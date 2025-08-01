@@ -24,7 +24,7 @@ cp redash-config.example .env
 Edit `.env` with your actual Redash credentials:
 ```env
 REDASH_BASE_URL=https://your-redash-instance.com
-***REMOVED***your-api-key-here
+REDASH_API_KEY=your-api-key
 ```
 
 ### 3. Make Scripts Executable

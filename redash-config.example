@@ -1,11 +1,3 @@
-***REMOVED***
-***REMOVED***
 
-***REMOVED***
 REDASH_BASE_URL=https://your-redash-instance.com
-
-***REMOVED***
-***REMOVED***your-api-key-here
-
-***REMOVED***
-***REMOVED***
+REDASH_API_KEY=your-api-key
