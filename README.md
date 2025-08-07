@@ -30,7 +30,11 @@ chmod +x prepProdFeed.sh redash.sh run.sh
 
 # 4. Run the complete production workflow
 ./prepProdFeed.sh
+
 ```
+5. Use the collection runner in this Feed Service [collection](https://postman.postman.co/workspace/6dc19bf3-4a25-4d04-88f2-ec91e0f7ae10/folder/34230463-dae351f7-d758-4a51-bd39-7542a257718b) to add all the feed items from the generated `prod_feed_<date>_<time>.csv`. See [loom](https://www.loom.com/share/9d6eb0a267774f0c9d00ec59bdc9a9f5?sid=dd5ef6ef-7396-443b-96d0-da0ed2d4ad33) for steps.
+
+6. Delete the feed items from the generated `prod_feed_<date>_<time>-removed-entries.csv`
 
 ### What It Does
 1. **📊 Fetches Data**: Executes Redash query 33047 and exports raw CSV

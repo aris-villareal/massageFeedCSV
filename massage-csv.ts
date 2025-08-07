@@ -74,6 +74,138 @@ function transformRow(inputRow: InputRow): OutputRow {
 }
 
 /**
+ * Finds the most recent feed file before the current one
+ */
+function findPreviousFeedFile(currentOutputPath: string): string | null {
+  try {
+    const currentDir = path.dirname(currentOutputPath);
+    const currentFileName = path.basename(currentOutputPath);
+    
+    // Extract timestamp from current file name (format: prod_feed_YYYYMMDD_HHMMSS.csv)
+    const timestampMatch = currentFileName.match(/prod_feed_(\d{8}_\d{6})\.csv/);
+    if (!timestampMatch) {
+      console.log('⚠️  Current file does not match expected feed file pattern');
+      return null;
+    }
+    
+    const currentTimestamp = timestampMatch[1];
+    
+    // Find all prod_feed files in the directory
+    const feedFiles = fs.readdirSync(currentDir)
+      .filter(file => file.match(/^prod_feed_\d{8}_\d{6}\.csv$/))
+      .filter(file => file !== currentFileName) // Exclude current file
+      .sort()
+      .reverse(); // Most recent first
+    
+    if (feedFiles.length === 0) {
+      console.log('ℹ️  No previous feed files found for comparison');
+      return null;
+    }
+    
+    const previousFile = feedFiles[0];
+    const previousPath = path.join(currentDir, previousFile);
+    
+    console.log(`🔍 Found previous feed file: ${previousFile}`);
+    return previousPath;
+    
+  } catch (error) {
+    console.warn('⚠️  Error finding previous feed file:', error instanceof Error ? error.message : error);
+    return null;
+  }
+}
+
+/**
+ * Reads a CSV file and extracts discussionIds
+ */
+function extractDiscussionIds(csvFilePath: string): Set<string> {
+  try {
+    const fileContent = fs.readFileSync(csvFilePath, 'utf-8');
+    const lines = fileContent.trim().split('\n');
+    
+    if (lines.length <= 1) {
+      return new Set();
+    }
+    
+    // Parse header to find discussionId column index
+    const headerLine = lines[0];
+    const headers = parseCsvLine(headerLine);
+    const discussionIdIndex = headers.indexOf('discussionId');
+    
+    if (discussionIdIndex === -1) {
+      console.warn(`⚠️  discussionId column not found in ${csvFilePath}`);
+      return new Set();
+    }
+    
+    const discussionIds = new Set<string>();
+    
+    // Extract discussionIds from data rows
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line === '') continue;
+      
+      const values = parseCsvLine(line);
+      if (values.length > discussionIdIndex) {
+        discussionIds.add(values[discussionIdIndex]);
+      }
+    }
+    
+    return discussionIds;
+    
+  } catch (error) {
+    console.warn(`⚠️  Error reading CSV file ${csvFilePath}:`, error instanceof Error ? error.message : error);
+    return new Set();
+  }
+}
+
+/**
+ * Compares two feed files and identifies entries that were removed
+ */
+function compareFeedsAndFindRemoved(currentFilePath: string, previousFilePath: string): void {
+  console.log('\n🔄 Comparing feeds to identify removed entries...');
+  
+  const currentIds = extractDiscussionIds(currentFilePath);
+  const previousIds = extractDiscussionIds(previousFilePath);
+  
+  console.log(`📊 Current feed contains ${currentIds.size} discussions`);
+  console.log(`📊 Previous feed contained ${previousIds.size} discussions`);
+  
+  // Find discussionIds that were in previous but not in current
+  const removedIds = Array.from(previousIds).filter(id => !currentIds.has(id));
+  
+  if (removedIds.length === 0) {
+    console.log('✅ No discussions were removed from the feed');
+    return;
+  }
+  
+  console.log(`\n⚠️  Found ${removedIds.length} discussions that were removed:`);
+  
+  // Generate removed entries report as CSV
+  const currentDir = path.dirname(currentFilePath);
+  const currentFileName = path.basename(currentFilePath, '.csv');
+  const reportPath = path.join(currentDir, `${currentFileName}-removed-entries.csv`);
+  
+  try {
+    // Create CSV report with just the discussionIds
+    const csvLines = ['discussionId']; // Header
+    removedIds.forEach(id => csvLines.push(id));
+    
+    // Write CSV report file
+    fs.writeFileSync(reportPath, csvLines.join('\n'), 'utf-8');
+    
+    console.log(`📄 Removed entries report saved to: ${reportPath}`);
+    console.log('\n📋 Removed discussion IDs:');
+    removedIds.forEach(id => console.log(`   • ${id}`));
+    
+  } catch (error) {
+    console.error('❌ Error generating removed entries report:', error instanceof Error ? error.message : error);
+    
+    // Fallback: just list the IDs
+    console.log('\n📋 Removed discussion IDs:');
+    removedIds.forEach(id => console.log(`   • ${id}`));
+  }
+}
+
+/**
  * Processes a CSV file according to the specified transformations
  */
 function processCsvFile(inputFilePath: string, outputFilePath?: string): void {
@@ -160,6 +292,15 @@ function processCsvFile(inputFilePath: string, outputFilePath?: string): void {
     console.log(`   • ${entityTypeChanges} "update" values changed to "workspace"`);
     console.log(`   • All score values multiplied by 10000`);
     
+    // Compare with previous feed if this is a prod feed file
+    const outputFileName = path.basename(outputFilePath);
+    if (outputFileName.match(/^prod_feed_\d{8}_\d{6}\.csv$/)) {
+      const previousFeedPath = findPreviousFeedFile(outputFilePath);
+      if (previousFeedPath) {
+        compareFeedsAndFindRemoved(outputFilePath, previousFeedPath);
+      }
+    }
+    
   } catch (error) {
     console.error('❌ Error processing CSV file:', error instanceof Error ? error.message : error);
     process.exit(1);
@@ -203,4 +344,4 @@ if (require.main === module) {
   main();
 }
 
-export { processCsvFile, transformRow };
+export { processCsvFile, transformRow, findPreviousFeedFile, compareFeedsAndFindRemoved, extractDiscussionIds };
