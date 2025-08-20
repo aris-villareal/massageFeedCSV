@@ -69,7 +69,7 @@ function transformRow(inputRow: InputRow): OutputRow {
     entityId: inputRow.entityid,
     entityType: inputRow.entitytype === 'update' ? 'workspace' : inputRow.entitytype,
     discussionCreatedAt: inputRow.discussioncreatedat,
-    score: (parseFloat(inputRow.score) * 10000).toString()
+    score: (parseFloat(inputRow.score)).toString()
   };
 }
 
